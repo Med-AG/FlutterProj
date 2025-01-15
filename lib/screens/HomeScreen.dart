@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
           "Gestion de Budget",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18, // Slightly smaller font size for better fit
+            fontSize: 18,
           ),
         ),
         centerTitle: true,
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildInfoCard("Incomes", "150 \$", Colors.green),
                     _buildInfoCard("Expenses", "200 \$", Colors.red),
                     _buildInfoCard("Balance", "700 \$", Colors.blue),
-                    Flexible(child: _buildCalendarCard()), // Ensures the calendar fits well
+                    Flexible(child: _buildCalendarCard()),
                   ],
                 ),
               ),
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Salary',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16, // Adjusted font size for better fit
+                              fontSize: 16,
                               color: Colors.blueAccent,
                             ),
                           ),
@@ -180,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(
               Icons.calendar_today,
               color: Colors.deepPurple,
-              size: 24, // Adjusted size for a more compact view
+              size: 24,
             ),
             SizedBox(height: 5),
             Text(
