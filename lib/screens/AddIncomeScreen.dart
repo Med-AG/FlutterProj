@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:statefulclickcounter/models/Income.dart';
-
-import 'package:statefulclickcounter/screens/HomeScreen.dart';
+import 'package:expense_income_tracker/models/Income.dart';
+import 'package:expense_income_tracker/screens/HomeScreen.dart';
 
 class AddIncomeScreen extends StatefulWidget {
   const AddIncomeScreen({super.key});
