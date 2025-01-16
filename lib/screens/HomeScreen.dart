@@ -13,22 +13,26 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; // Track the selected navigation bar index
 
-  // List of widgets for different screens
-  final List<Widget> _pages = [
-    const HomePage(),
-    const AddIncomeScreen(),
-    const AddExpenseScreen(),
-  ];
-
+  // Method to handle navigation bar tap
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex =
-          index; // Change the selected index to display the corresponding page
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget bodyContent;
+
+    // Dynamically display content based on selected index
+    if (_selectedIndex == 0) {
+      bodyContent = _buildHomeContent();
+    } else if (_selectedIndex == 1) {
+      bodyContent = const AddIncomeScreen();
+    } else {
+      bodyContent = const AddExpenseScreen();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -41,9 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
-      body: SafeArea(
-        child: _pages[_selectedIndex], // Dynamically show the selected page
-      ),
+      body: SafeArea(child: bodyContent),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -66,14 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-// Home Page
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
+  // Build the content of the home screen
+  Widget _buildHomeContent() {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -180,6 +177,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // Helper method to create info cards
   Widget _buildInfoCard(String title, String value, Color color) {
     return Container(
       padding: const EdgeInsets.all(8),
