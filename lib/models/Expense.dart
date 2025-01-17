@@ -17,7 +17,7 @@ class Expense {
     required this.amount,
   });
 
-  // Factory constructor to create an instance of Expense from JSON
+  
   factory Expense.fromJson(Map<String, dynamic> json) {
     return Expense(
       id: json['id'] as int?,
@@ -49,7 +49,7 @@ class Expense {
   }
 */
 
-  // Method to convert an Expense instance to JSON
+  
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
