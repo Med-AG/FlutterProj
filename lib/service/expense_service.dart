@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class ExpenseService {
   final String baseUrl = 'http://localhost:8080/api/expense';
 
-  // Function to post a new expense
+  
   Future<bool> postExpense(Expense expense) async {
     try {
       final response = await http.post(
@@ -27,7 +27,7 @@ class ExpenseService {
     }
   }
 
-  // Function to delete an expense by id
+  
   Future<bool> deleteExpense(int id) async {
     try {
       final response = await http.delete(
