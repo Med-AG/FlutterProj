@@ -15,7 +15,6 @@ class Income {
     required this.amount,
   });
 
-  // Factory constructor to create an instance of Income from JSON
   factory Income.fromJson(Map<String, dynamic> json) {
     return Income(
       id: json['id'] as int?,
@@ -27,7 +26,6 @@ class Income {
     );
   }
 
-  // Method to convert an Income instance to JSON
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
