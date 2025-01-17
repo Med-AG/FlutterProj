@@ -44,7 +44,6 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       return;
     }
 
-    // Create the Income object
     final newIncome = Income(
       title: _titleController.text,
       description: _descriptionController.text,
