@@ -1,7 +1,5 @@
-
 class Income {
-
-  final int id;
+  final int? id;
   final String title;
   final String description;
   final String category;
@@ -9,7 +7,7 @@ class Income {
   final double amount;
 
   Income({
-    required this.id,
+    this.id,
     required this.title,
     required this.description,
     required this.category,
@@ -20,7 +18,7 @@ class Income {
   // Factory constructor to create an instance of Income from JSON
   factory Income.fromJson(Map<String, dynamic> json) {
     return Income(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       title: json['title'] as String,
       description: json['description'] as String,
       category: json['category'] as String,
@@ -32,13 +30,12 @@ class Income {
   // Method to convert an Income instance to JSON
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      if (id != null) 'id': id,
       'title': title,
       'description': description,
       'category': category,
-      'date': date.toIso8601String(),
+      'date': date.toIso8601String().split('T')[0],
       'amount': amount,
     };
   }
-
 }

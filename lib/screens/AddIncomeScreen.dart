@@ -1,3 +1,4 @@
+import 'package:expense_income_tracker/service/income_service.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_income_tracker/models/Income.dart';
 import 'package:expense_income_tracker/screens/HomeScreen.dart';
@@ -13,7 +14,10 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+
   DateTime? _selectedDate;
+  final IncomeService _incomeService = IncomeService(); // Initialize the service
 
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -29,42 +33,52 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
     }
   }
 
-  void _addIncome() {
+  void _addIncome() async {
     if (_titleController.text.isEmpty ||
         _amountController.text.isEmpty ||
-        _selectedDate == null) {
+        _selectedDate == null ||
+        _categoryController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Veuillez remplir tous les champs !")),
       );
       return;
     }
 
+    // Create the Income object
     final newIncome = Income(
-      id: DateTime.now().millisecondsSinceEpoch, // Temporary unique ID
       title: _titleController.text,
       description: _descriptionController.text,
-      category: "Income", // Default category
-      date: _selectedDate!,
+      category: _categoryController.text,
+      date: _selectedDate!, // Ensure _selectedDate is not null
       amount: double.tryParse(_amountController.text) ?? 0.0,
     );
 
-    // For now, log the result (replace with database logic or state management)
-    print("New Income: ${newIncome.toJson()}");
+    // Call the service to post the income
+    final success = await _incomeService.postIncome(newIncome);
 
-    // Navigate back to HomeScreen
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-      (route) => false, // Remove all previous routes
-    );
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Income ajoutée avec succès !")),
+      );
+
+      // Navigate back to HomeScreen
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (route) => false, // Remove all previous routes
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Erreur lors de l'ajout de l'income.")),
+      );
+    }
   }
 
   void _cancel() {
-    // Navigate back to HomeScreen
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),
-      (route) => false, // Remove all previous routes
+          (route) => false,
     );
   }
 
@@ -77,75 +91,85 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: "Titre",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Montant",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            GestureDetector(
-              onTap: () => _selectDate(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  _selectedDate == null
-                      ? "Sélectionnez une date"
-                      : "Date: ${_selectedDate!.toLocal()}".split(' ')[0],
-                  style: const TextStyle(fontSize: 16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelText: "Titre",
+                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _descriptionController,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: "Description",
-                border: OutlineInputBorder(),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Montant",
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: _cancel,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () => _selectDate(context),
+                child: Container(
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text("Annuler",
-                      style: TextStyle(color: Colors.white)),
-                ),
-                ElevatedButton(
-                  onPressed: _addIncome,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                  child: Text(
+                    _selectedDate == null
+                        ? "Sélectionnez une date"
+                        : "Date: ${_selectedDate!.toLocal()}".split(' ')[0],
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  child: const Text("Ajouter",
-                      style: TextStyle(color: Colors.white)),
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _categoryController,
+                decoration: const InputDecoration(
+                  labelText: "Catégorie",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: "Description",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: _cancel,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                    ),
+                    child: const Text("Annuler",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  ElevatedButton(
+                    onPressed: _addIncome,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                    ),
+                    child: const Text("Ajouter",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
