@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class IncomeService {
   final String baseUrl = 'http://localhost:8080/api/income';
-
+  
   Future<bool> postIncome(Income income) async {
     try {
       final response = await http.post(
@@ -25,8 +25,7 @@ class IncomeService {
       return false;
     }
   }
-
-  // Function to delete an income by id
+  
   Future<bool> deleteIncome(int id) async {
     try {
       final response = await http.delete(
