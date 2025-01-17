@@ -88,7 +88,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       return;
     }
 
-    // Create the Expense object without 'id'
+    
     final newExpense = Expense(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -108,7 +108,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         const SnackBar(content: Text("Expense ajoutée avec succès !")),
       );
 
-      // Navigate back to HomeScreen
+      
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
